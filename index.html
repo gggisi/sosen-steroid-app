@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>薬剤換算アプリ</title>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:#f7f7f4;color:#222}
+header{background:#1f2937;color:white;padding:18px 16px}
+h1{font-size:22px;margin:0}
+main{max-width:900px;margin:auto;padding:16px}
+.card{background:white;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 4px 18px #0001}
+label{font-weight:700;display:block;margin:12px 0 6px}
+select,button{width:100%;font-size:18px;padding:13px;border-radius:12px;border:1px solid #ccc;background:white}
+button{background:#2563eb;color:white;border:0;font-weight:700;margin-top:16px}
+.result{font-size:22px;font-weight:800;line-height:1.7}
+.small{font-size:13px;color:#666;line-height:1.6}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#e0f2fe;color:#075985;font-size:13px;margin-left:6px}
+.option{border-top:1px solid #eee;padding:12px 0}
+.warn{background:#fff7ed;border-left:5px solid #f97316}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left}
+</style>
+</head>
+<body>
+<header>
+<h1>薬剤換算アプリ｜そうせん整形外科</h1>
+<div class="small" style="color:#d1d5db">リンデロン・ケナコルト欠品時の代替早見</div>
+</header>
+
+<main>
+<div class="card">
+<label>処置を選択</label>
+<select id="procedure">
+<option value="">選択してください</option>
+<option value="shoulder">肩周囲・肘部</option>
+<option value="tendon">腱鞘内／手部・足部</option>
+<option value="epidural">硬膜外・神経根ブロック</option>
+<option value="manipulation">マニピュレーション</option>
+<option value="trigger">ばね指・ドケルヴァン</option>
+</select>
+
+<label>旧処方を選択</label>
+<select id="oldDrug">
+<option value="">選択してください</option>
+<option value="r2">リンデロン 2mg 1cc</option>
+<option value="r4">リンデロン 4mg 1cc</option>
+<option value="kena1">ケナコルト 1cc</option>
+<option value="kena4">ケナコルト 4cc</option>
+</select>
+
+<button onclick="convert()">換算する</button>
+</div>
+
+<div class="card">
+<div id="result" class="result">ここに代替候補が表示されます</div>
+</div>
+
+<div class="card warn">
+<div class="small">
+<strong>注意：</strong>このアプリは院内メモ用です。最終判断は医師が行ってください。<br>
+デカドロンは先生の表に合わせて、理論量より少なめの安全側設定です。
+</div>
+</div>
+
+<div class="card">
+<h2 style="font-size:18px">早見表</h2>
+<table>
+<tr><th>旧薬剤</th><th>代替</th></tr>
+<tr><td>リンデロン2mg 1cc</td><td>リノロサール2mg 1cc／デカドロン0.5cc</td></tr>
+<tr><td>リンデロン4mg 1cc</td><td>リノロサール4mg 1cc／デカドロン1cc</td></tr>
+<tr><td>ケナコルト1cc</td><td>懸濁リンデロン0.5cc／デポメドロール0.5cc</td></tr>
+<tr><td>ケナコルト4cc</td><td>デポメドロール2cc</td></tr>
+</table>
+</div>
+</main>
+
+<script>
+const rules = {
+  shoulder: {
+    r2: ["リノロサール2mg 1cc", "または デカドロン 0.5cc"],
+  },
+  tendon: {
+    r2: ["リノロサール2mg 1cc", "デカドロン 0.5cc", "または デポメドロール 0.5cc"],
+    kena1: ["デポメドロール 0.5cc"]
+  },
+  epidural: {
+    r4: ["リノロサール4mg 1cc", "または デカドロン 1cc"]
+  },
+  manipulation: {
+    kena4: ["デポメドロール 2cc"]
+  },
+  trigger: {
+    kena1: ["懸濁リンデロン 0.5cc", "または デポメドロール 0.5cc"]
+  }
+};
+
+const procNames = {
+  shoulder:"肩周囲・肘部",
+  tendon:"腱鞘内／手部・足部",
+  epidural:"硬膜外・神経根ブロック",
+  manipulation:"マニピュレーション",
+  trigger:"ばね指・ドケルヴァン"
+};
+
+const oldNames = {
+  r2:"リンデロン2mg 1cc",
+  r4:"リンデロン4mg 1cc",
+  kena1:"ケナコルト1cc",
+  kena4:"ケナコルト4cc"
+};
+
+function convert(){
+  const p=document.getElementById("procedure").value;
+  const d=document.getElementById("oldDrug").value;
+  const box=document.getElementById("result");
+
+  if(!p || !d){
+    box.innerHTML="処置と旧処方を選んでください。";
+    return;
+  }
+
+  if(rules[p] && rules[p][d]){
+    box.innerHTML =
+      `<div class="small">処置：${procNames[p]}<br>旧：${oldNames[d]}</div>` +
+      rules[p][d].map(x=>`<div class="option">→ ${x}</div>`).join("") +
+      `<button onclick="copyResult()">結果をコピー</button>`;
+  } else {
+    box.innerHTML =
+      `この組み合わせは登録がありません。<br><span class="small">表にない処方です。確認してください。</span>`;
+  }
+}
+
+function copyResult(){
+  const text=document.getElementById("result").innerText.replace("結果をコピー","");
+  navigator.clipboard.writeText(text);
+  alert("コピーしました");
+}
+</script>
+</body>
+</html>
