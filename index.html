@@ -43,7 +43,7 @@ td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left}
 <label>旧処方を選択</label>
 <select id="oldDrug">
 <option value="">選択してください</option>
-<option value="r2">リンデロン 2mg 1cc</option>
+<option value="r2">リンデロン 2mg 0.5cc</option>
 <option value="r4">リンデロン 4mg 1cc</option>
 <option value="kena1">ケナコルト 1cc</option>
 <option value="kena4">ケナコルト 4cc</option>
@@ -67,7 +67,7 @@ td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left}
 <h2 style="font-size:18px">早見表</h2>
 <table>
 <tr><th>旧薬剤</th><th>代替</th></tr>
-<tr><td>リンデロン2mg 1cc</td><td>リノロサール2mg 1cc／デカドロン0.5cc</td></tr>
+<tr><td>リンデロン2mg 0.5cc</td><td>リノロサール2mg 0.5cc／デカドロン0.5cc</td></tr>
 <tr><td>リンデロン4mg 1cc</td><td>リノロサール4mg 1cc／デカドロン1cc</td></tr>
 <tr><td>ケナコルト1cc</td><td>懸濁リンデロン0.5cc／デポメドロール0.5cc</td></tr>
 <tr><td>ケナコルト4cc</td><td>デポメドロール2cc</td></tr>
@@ -78,10 +78,10 @@ td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left}
 <script>
 const rules = {
   shoulder: {
-    r2: ["リノロサール2mg 1cc", "または デカドロン 0.5cc"],
+    r2: ["リノロサール2mg 0.5cc", "または デカドロン 0.5cc"],
   },
   tendon: {
-    r2: ["リノロサール2mg 1cc", "デカドロン 0.5cc", "または デポメドロール 0.5cc"],
+    r2: ["リノロサール2mg 0.5cc", "デカドロン 0.5cc", "または デポメドロール 0.5cc"],
     kena1: ["デポメドロール 0.5cc"]
   },
   epidural: {
@@ -104,7 +104,7 @@ const procNames = {
 };
 
 const oldNames = {
-  r2:"リンデロン2mg 1cc",
+  r2:"リンデロン2mg 0.5cc",
   r4:"リンデロン4mg 1cc",
   kena1:"ケナコルト1cc",
   kena4:"ケナコルト4cc"
